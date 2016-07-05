@@ -1,0 +1,1128 @@
+
+                USER MANUAL FOR EXO_TRANSMIT CODE 
+
+Authors: Eliza Kempton, Albert Owusu-Asare, Patrick Slough
+last edited:  Tue May 24 2016
+
+
+----------------------------------------------------------------------------------------------
+The Exo_Transmit code can be obtained from :
+
+https://github.com/elizakempton/Exo_Transmit
+
+==============================================================================================
+
+
+
+
+                              LICENSE AND LEGAL NOTICE
+----------------------------------------------------------------------------------------------
+
+  Copyright (C) 2016  Eliza Kempton
+  Permission is granted to copy, distribute and/or modify this document
+  under the terms of the GNU Free Documentation License, Version 1.3
+  or any later version published by the Free Software Foundation;
+  with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
+  A copy of the license is included the in section entitled "GNU
+  Free Documentation License". 
+
+==============================================================================================
+
+
+
+
+                                ABOUT THIS MANUAL
+----------------------------------------------------------------------------------------------
+
+This manual is intended for persons interested in generating transmission spectra to study  
+exoplanet atmospheres. The manual includes: instructions on downloading the Exo_Transmit 
+code, information about the code's functionality, a discussion of the different components of
+the code, a tutorial on how to use the code, and a troubleshooting section. The Exo-Transmit
+code is described in further detail in **paper reference**.  
+
+This manual assumes the code is run on a UNIX, LINUX, or similar platform and references may 
+be made to certain features of the UNIX or LINUX operating systems.  
+
+The manual uses the sign " --> " which serves to troubleshoot some problems that may come up 
+during the step by step instructions
+                                      
+Every care has been taken to prepare this document however, any input/concerns related to 
+this document or the Exo_Transmit code are appreciated. Such input/concerns should be emailed
+to:
+
+Eliza Kempton
+kemptone@grinnell.edu
+
+==============================================================================================
+
+
+
+                                  CONTENTS
+----------------------------------------------------------------------------------------------
+
+* Download instructions
+* General Information
+* Information on input files
+* Sample runs of program
+* Troubleshooting: possible errors
+* Further help and contact details
+* GNU Free Documentation License
+
+==============================================================================================
+
+
+
+                                DOWNLOAD INSTRUCTIONS 
+----------------------------------------------------------------------------------------------
+Please try either option (A) or (B)
+
+
+---------------------------------
+(A) Clone the package from github
+
+
+***********************************************************************
+Prerequisites: git, github account                                    *
+                                                                      *
+Move on to 'Steps' if you have both of the above, or else :           *
+                                                                      *
+    Download latest version of git:                                   *
+                      http://git-scm.com/downloads                    * 
+    Sign up at github:                                                *
+                      https://github.com/join                         *
+    For basic help with git:                                          *
+                      http://git-scm.com/doc                          *
+                                                                      *
+OR:                                                                   *
+Try option (B)                                                        *
+***********************************************************************
+
+Steps:
+
+1. In a terminal window, move to the required directory.
+2. Type into the terminal at the required directory:
+       git clone https://github.com/elizakempton/Exo_Transmit.git
+3. Follow given instructions from git about username and password
+4. A working directory will be created as 'Exo_Transmit' 
+   -->   Downloading of the package may take a while. Check progress percentage.
+5. Open Exo_Transmit or move to the directory to have access to the program
+
+EXAMPLE:
+1. cd /home/USER/
+2. git clone https://github.com/elizakempton/Exo_Transmit.git
+3. Username for 'https://github.com': myusername
+   Password for 'https://myusername@github.com': ********
+4. cd Exo_Transmit
+
+           OR
+
+-------------------------------------
+(B) Download the package from github website
+
+Steps:
+1. Go to: https://github.com/elizakempton/Exo_Transmit
+2. Click on "Download ZIP" on the righthand side of the page
+3. In a terminal move to the location of the downloaded 'tar' file.
+4. Type into the terminal, " tar -zxvf <filename> "
+   (In the current version of the code, filename = exo_transmit-master.zip)
+5. Check if new directory "Exo_Transmit-master" exists
+6. Move to new directory to have access to the program
+
+EXAMPLE:
+1. I downloaded the package to the location /home/USER/
+2. cd /home/USER/
+3. unzip exo_transmit-master.zip
+4. ls
+5. cd Exo_Transmit
+
+
+==============================================================================================
+
+
+
+                                 GENERAL INFORMATION
+----------------------------------------------------------------------------------------------
+
+
+
+What the code does:
+-----------------------
+
+Overview: 
+
+Exo-Transmit calculates the transmission spectrum of an exoplanet atmosphere given specified 
+input information about the planetary and stellar radii, the planet's surface gravity, the 
+atmospheric temperature-pressure (T-P) profile, the location (in terms of pressure) of any
+cloud layers, the composition of the atmosphere, and opacity data for the atoms and molecules
+that make up the atmosphere.  
+
+The code solves the equation of radiative transfer for absorption of starlight passing 
+through the planet's atmosphere as it transits, accounting for the oblique path of light 
+through the planetary atmosphere along an Earth-bound observer's line of sight.  The fraction 
+of light absorbed (or blocked) by the planet plus its atmosphere is calculated as a function 
+of wavelength to produce the wavelength-dependent transmission spectrum.  Funtionality is
+provided to simulate the presence of atmospheric aerosols in two ways:  (1) an optically 
+thick (gray) cloud deck can be generated at a user-specified height in the atmosphere, and 
+(2) the nominal Rayleigh scattering can be increased by a specified factor.
+
+==============================================================================================
+
+
+
+     Program files and directories:
+-----------------------------------
+
+The Exo_Transmit package contains the following files:
+
+----------
+
+header files:
+
+atmos.h       include.h     opac.h        vars.h
+constant.h    nrutil.h      prototypes.h
+
+-----------
+
+source files:
+
+geometry.c	    -- calculates path lengths and angles associated w/ transmission geometry
+getChemSelection.c  -- determines which molecules will be included in the opacity calculation
+		       based on user input
+getFileArray.c	    -- reads in file names specified in the input files
+getNTau.c           -- determines how many layers of the T-P profile lie above a user 
+		       specified cloud deck
+getVars.c           -- reads user inputs from the input files
+interpol.c	    -- interpolation routines           
+main_transmission.c -- main procedure -- calls a sequence of subroutines to obtain the 
+		       transmission spectrum
+nrutil.c            -- Numerical Recipes routines
+planck.c            -- calculates the Planck function for a specified temperature
+read_t_p.c          -- reads in T-P profile files
+readchemtable.c	    -- reads in chemistry table data
+readopactable.c	    -- reads in opacity tables for individual molecules
+rt_transmission.c   -- radiative transfer driver -- calculates transmission spectrum by 
+		       integrating the transfer equation for pure absorption at the 
+		       appropriate geometry
+totalopac.c	    -- calculates total opacities
+utils.c		    -- array management routines
+
+------------
+
+other files:
+
+LICENSE.txt	    -- GNU Lesser General Public License          
+selectChem.in	    -- input file for selecting which molecules will be included in opacity
+		       calculations -- details is to have all molecules turned on  
+otherInput.in	    -- other input information for Exo_Transmit that typically will not be 
+		       altered by the user
+Makefile            -- makefile for compiling Exo_Transmit
+userInput.in	    -- input file for basic user inputs
+README        	    -- basic code information and information on compiling
+USR_MANUAL.txt	    -- this file
+
+-->(NOTE: files ending in ".in" are input files)
+
+----------------------
+
+files in subdirectories:
+
+These are the files in the sub-directories: EOS, Opac, Spectra, T_P
+
+EOS:
+EOS/:
+eos_0p1Xsolar_cond.dat               -- equilibrium chemistry file with metalicity = 0.1 
+				        times solar -- condensation and removal via rainout
+					of molecules out of the gas phase is included -- does
+					not include condensation and rainout of graphite
+eos_0p1Xsolar_gas.dat                -- equilibrium chemistry file with metalicity = 0.1 
+				        times solar -- only gas phase chemistry is accounted
+					for 
+eos_1000Xsolar_cond.dat               
+eos_1000Xsolar_cond_graphite.dat     -- equilibrium chemistry file with metalicity = 1000 
+				        times solar -- condensation and removal via rainout
+					of molecules out of the gas phase (including 
+					graphite) is included 
+eos_1000Xsolar_gas.dat               -- (Same file-naming convention as above) 
+eos_100Xsolar_cond.dat                  " "
+eos_100Xsolar_cond_graphite.dat         " "
+eos_100Xsolar_gas.dat                 
+eos_10Xsolar_cond.dat                 
+eos_10Xsolar_cond_graphite.dat        
+eos_10Xsolar_gas.dat                  
+eos_1Xsolar_cond.dat                  
+eos_1Xsolar_gas.dat                   
+eos_30Xsolar_cond.dat                 
+eos_30Xsolar_cond_graphite.dat        
+eos_30Xsolar_gas.dat                  
+eos_50Xsolar_cond.dat                 
+eos_50Xsolar_cond_graphite.dat        
+eos_50Xsolar_gas.dat                  
+eos_5Xsolar_cond.dat                  
+eos_5Xsolar_cond_graphite.dat         
+eos_5Xsolar_gas.dat                   
+eos_C2H2.dat			     -- chemistry file for an atmosphere made of 100% C2H2
+eos_C2H4.dat                         -- chemistry file for an atmosphere made of 100% C2H4 
+eos_C2H6.dat                         -- chemistry file for an atmosphere made of 100% C2H6 
+eos_CH4.dat                          -- chemistry file for an atmosphere made of 100% CH4 
+eos_CO.dat                           -- (Same file-naming convention as above) 
+eos_CO2.dat                             " " 
+eos_H2CO.dat                            " "
+eos_H2O.dat                           
+eos_H2S.dat                           
+eos_HCN.dat                           
+eos_HCl.dat			   
+eos_HF.dat			   
+eos_MgH.dat			   
+eos_N2.dat			   
+eos_NH3.dat			   
+eos_NO.dat			   
+eos_NO2.dat			   
+eos_O2.dat			   
+eos_O3.dat			   
+eos_OCS.dat			   
+eos_OH.dat			   
+eos_PH3.dat			   
+eos_SH.dat			   
+eos_SO2.dat			   
+eos_SiH.dat			   
+eos_SiO.dat			   
+eos_TiO.dat			   
+eos_VO.dat			   
+eos_solar_0p2_CtoO_cond.dat	     -- equilibrium chemistry file for solar metalicity and
+				        a C:O ratio of 0.2 -- condensation and removal via 
+					rainout of molecules out of the gas phase is included
+ 					-- does not include condensation and rainout of 
+					graphite
+eos_solar_0p2_CtoO_gas.dat	    -- equilibrium chemistry file for solar metalicity and
+				       a C:O ratio of 0.2 -- only gas phase chemistry is 
+				       accounted for 
+					
+eos_solar_0p4_CtoO_cond.dat	   
+eos_solar_0p4_CtoO_gas.dat	   
+eos_solar_0p6_CtoO_cond.dat	   
+eos_solar_0p6_CtoO_gas.dat	   
+eos_solar_0p8_CtoO_cond.dat	   
+eos_solar_0p8_CtoO_gas.dat	   
+eos_solar_1p0_CtoO_cond.dat	   
+eos_solar_1p0_CtoO_cond_graphite.dat -- equilibrium chemistry file for solar metalicity and
+				        a C:O ratio of 1.0 -- condensation and removal via 
+					rainout of molecules out of the gas phase (including 
+					graphite) is included 
+eos_solar_1p0_CtoO_gas.dat	   
+eos_solar_1p2_CtoO_cond.dat	   
+eos_solar_1p2_CtoO_cond_graphite.dat 
+eos_solar_1p2_CtoO_gas.dat           
+
+-->(NOTE: The above are the chemistry files supplied with the program.  Note that you can 
+add your own chemistry files provided you maintain the format used in our chemistry files. 
+Open any of the files above to see format.)
+
+Opac/:
+opacC2H2.dat  opacCO2.dat   opacHF.dat    opacNO2.dat   opacPH3.dat   opacVO.dat
+opacC2H4.dat  opacH2CO.dat  opacK.dat     opacNa.dat    opacSH.dat
+opacC2H6.dat  opacH2O.dat   opacMgH.dat   opacO2.dat    opacSO2.dat
+opacCH4.dat   opacH2S.dat   opacN2.dat    opacO3.dat    opacSiH.dat
+opacCIA.dat   opacHCN.dat   opacNH3.dat   opacOCS.dat   opacSiO.dat
+opacCO.dat    opacHCl.dat   opacNO.dat    opacOH.dat    opacTiO.dat
+-- Files containing single-molecule opacities (absorption cross sections in m^2)  
+   + collision-induced opacities
+
+Spectra/:
+C2H2_1000K_g10_2RE_1RSun.dat  HCN_1000K_g10_2RE_1RSun.dat   OH_1000K_g10_2RE_1RSun.dat
+C2H4_1000K_g10_2RE_1RSun.dat  HCl_1000K_g10_2RE_1RSun.dat   PH3_1000K_g10_2RE_1RSun.dat
+C2H6_1000K_g10_2RE_1RSun.dat  HF_1000K_g10_2RE_1RSun.dat    SH_1000K_g10_2RE_1RSun.dat
+CH4_1000K_g10_2RE_1RSun.dat   MgH_1000K_g10_2RE_1RSun.dat   SO2_1000K_g10_2RE_1RSun.dat
+CO2_1000K_g10_2RE_1RSun.dat   N2_1000K_g10_2RE_1RSun.dat    SiH_1000K_g10_2RE_1RSun.dat
+COS_1000K_g10_2RE_1RSun.dat   NH3_1000K_g10_2RE_1RSun.dat   SiO_1000K_g10_2RE_1RSun.dat
+CO_1000K_g10_2RE_1RSun.dat    NO2_1000K_g10_2RE_1RSun.dat   H2CO_1000K_g10_2RE_1RSun.dat  
+NO_1000K_g10_2RE_1RSun.dat    TiO_1000K_g10_2RE_1RSun.dat   H2O_1000K_g10_2RE_1RSun.dat   
+O2_1000K_g10_2RE_1RSun.dat    VO_1000K_g10_2RE_1RSun.dat    H2S_1000K_g10_2RE_1RSun.dat   
+O3_1000K_g10_2RE_1RSun.dat
+
+T_P/:
+t_p_300K.dat	  t_p_800K.dat        t_p_1300K.dat     
+t_p_400K.dat      t_p_900K.dat        t_p_1400K.dat              
+t_p_500K.dat	  t_p_1000K.dat       t_p_1500K.dat         
+t_p_600K.dat	  t_p_1100K.dat 
+t_p_700K.dat	  t_p_1200K.dat 
+
+-->(NOTE: The above are the isothermal T-P profile files supplied with the program.  Note 
+that you can add your own T-P files provided you maintain the format used in our files. Open 
+any of the files above to see format.)
+
+Please make sure all the above files and directories are included in your
+package.
+
+
+      Information on Compilation (Also available in README)
+-----------------------------------------------------------
+
+To compile and run the program:
+ 1. In a terminal, move to the directory where the program files are found
+ 2. Type 'make clean'
+ 3. Type 'make'
+    --> ( There might be some warnings upon compilation of the
+          program. Please ignore those warnings. We appreciate feedback on
+          errors or warnings. please see the 'contact us' section.)
+
+ 4. Type './Exo_Transmit'
+    ** Before your first run of Exo-Transmit, you must configure your input file.  For 
+       details, read the following section. **
+
+    --> (An error message of the form:
+       Error opening file: /YOUR_PATH/EOS/eos_1Xsolar_cond.dat 
+       No such file or directory.
+       Make sure you have the appropriate file path and name specified in userInput.in
+       
+       This means you have not configured your input.in file yet. Please
+       move to the section below this one for help and try again.)
+
+EXAMPLE:
+
+1. cd ~/home/Exo_Transmit/
+2. $ make clean
+
+result:  
+ rm -f *.o *~ core*
+
+3.  $ make
+
+results:
+       cc -Wall -g -c main_transmission.c 
+       cc -Wall -g -c  readopactable.c 
+       cc -Wall -g -c  totalopac.c 
+       cc -Wall -g -c readchemtable.c 
+       cc -Wall -g -c read_t_p.c 
+       cc -Wall -g -c  rt_transmission.c
+       cc -Wall -g -c nrutil.c 
+       cc -Wall -g -c utils.c 
+       cc -Wall -g -c interpol.c 
+       cc -Wall -g -c  planck.c 
+       cc -Wall -g -c  geometry.c 
+       cc -Wall -g -c getFileArray.c
+       cc -Wall -g -c getVars.c
+       cc -Wall -g -c getNTau.c
+       cc -Wall -g -c getChemSelection.c
+       cc -lm -o Exo_Transmit  main_transmission.o readopactable.o totalopac.o 
+       readchemtable.o read_t_p.o rt_transmission.o nrutil.o utils.o interpol.o planck.o 
+       geometry.o getFileArray.o getVars.o getNTau.o getChemSelection.o
+
+4. $ ./Exo_Transmit
+
+results: 
+
+NTEMP: 30, NPRESSURE: 13
+Chemistry: 
+P_0     1.000000e+08 
+T_0     3.000000e+03 
+total   1.000000e-04 
+C       1.840702e-90 
+CH4     4.884950e-04 
+CO      1.991248e-75 
+CO2     1.195601e-63 
+C2H2    1.840702e-90 
+C2H4    1.840702e-90 
+H       1.840702e-90 
+HCN     1.840702e-90 
+HCl     0.000000e+00 
+HF      5.803795e-08 
+H2      8.367688e-01 
+H2CO    1.840702e-90 
+H2O     7.470776e-04 
+H2S     3.070205e-05 
+He      1.616752e-01 
+MgH     0.000000e+00 
+N       1.840702e-90 
+N2      3.264241e-23 
+NO2     1.840702e-90 
+NH3     1.344474e-04 
+NO      1.840702e-90 
+O       1.840702e-90 
+O2      1.840702e-90 
+OCS     1.535118e-82 
+OH      1.840702e-90 
+PH3     0.000000e+00 
+SH      0.000000e+00 
+SO2     1.840702e-90 
+SiH     0.000000e+00 
+SiO     0.000000e+00 
+TiO     0.000000e+00 
+VO      0.000000e+00 
+O3      1.840702e-90 
+C2H6    0.000000e+00 
+Na      0.000000e+00 
+K       0.000000e+00 
+ReadChemTable done
+opac 1.700000e-04 1.000000e-04 1.000000e+02
+Read CH4 Opacity done
+opac 1.700000e-04 1.000000e-04 1.000000e+02
+Read CO2 Opacity done
+opac 1.700000e-04 1.000000e-04 1.000000e+02
+Read CO Opacity done
+opac 1.700000e-04 1.000000e-04 1.000000e+02
+Read H2O Opacity done
+opac 1.700000e-04 1.000000e-04 1.000000e+02
+Read NH3 Opacity done
+opac 1.700000e-04 1.000000e-04 1.000000e+02
+Read O2 Opacity done
+opac 1.700000e-04 1.000000e-04 1.000000e+02
+Read O3 Opacity done
+opac 1.700000e-04 1.000000e-04 1.000000e+02
+Read C2H2 Opacity done
+opac 1.700000e-04 1.000000e-04 1.000000e+02
+Read C2H4 Opacity done
+opac 1.700000e-04 1.000000e-04 1.000000e+02
+Read C2H6 Opacity done
+opac 1.700000e-04 1.000000e-04 1.000000e+02
+Read H2CO Opacity done
+opac 1.700000e-04 1.000000e-04 1.000000e+02
+Read H2S Opacity done
+opac 1.700000e-04 1.000000e-04 1.000000e+02
+Read HCl Opacity done
+opac 1.700000e-04 1.000000e-04 1.000000e+02
+Read HCN Opacity done
+opac 1.700000e-04 1.000000e-04 1.000000e+02
+Read HF Opacity done
+opac 1.700000e-04 1.000000e-04 1.000000e+02
+Read MgH Opacity done
+opac 1.700000e-04 1.000000e-04 1.000000e+02
+Read N2 Opacity done
+opac 1.700000e-04 1.000000e-04 1.000000e+02
+Read NO Opacity done
+opac 1.700000e-04 1.000000e-04 1.000000e+02
+Read NO2 Opacity done
+opac 1.700000e-04 1.000000e-04 1.000000e+02
+Read OCS Opacity done
+opac 1.700000e-04 1.000000e-04 1.000000e+02
+Read OH Opacity done
+opac 1.700000e-04 1.000000e-04 1.000000e+02
+Read PH3 Opacity done
+opac 1.700000e-04 1.000000e-04 1.000000e+02
+Read SH Opacity done
+opac 1.700000e-04 1.000000e-04 1.000000e+02
+Read SiH Opacity done
+opac 1.700000e-04 1.000000e-04 1.000000e+02
+Read SiO Opacity done
+opac 1.700000e-04 1.000000e-04 1.000000e+02
+Read SO2 Opacity done
+opac 1.700000e-04 1.000000e-04 1.000000e+02
+Read TiO Opacity done
+opac 1.700000e-04 1.000000e-04 1.000000e+02
+Read VO Opacity done
+opac 1.700000e-04 1.000000e-04 1.000000e+02
+Read Na Opacity done
+opac 1.700000e-04 1.000000e-04 1.000000e+02
+Read K Opacity done
+TotalOpac done
+No Cloud layer will be calculated
+333     1.013784e+05    8.000000e+02
+ReadTP done
+No Cloud layer will be calculated
+R_atmosphere 3.771415e+06
+R (planet & atmosphere) 1.142141e+07
+R 0.997178
+Exo_Transmit done
+
+--> (Note that you may not get the exact same result as posted here, however do look out 
+    to make sure the program has achieved successful completion by looking for the last 
+    output line indicating 'Exo_Transmit done'.  The completed transmission spectrum 
+    should now be found at the path specified in 'userInput.in' under 'Output file'. )
+
+==============================================================================================
+
+                                 INPUT FILE INFORMATION:
+
+----------------------------------------------------------------------------------------------
+
+                            User-provided input  (userInput.in)
+----------------------------------------------------------------------------------------------
+
+The program allows users to change specific input data about the system to be modeled such as
+the radius of the planet and host star, and the planet's surface gravity.  
+
+The following describes what lines in userInput.in represent the parameters you may wish to 
+modify:
+
+ 
+Exo-Transmit home directory	                        line 4
+Temperature-pressure data file                          line 6
+Chemistry (gas abundance) data file                     line 8
+Output spectrum file                                    line 10
+Planet surface gravity                                  line 12
+Planet radius                                           line 14
+Steller radius                                          line 16     
+Pressure of cloud layer                                 line 18
+Rayleigh scattering augmentation factor           	line 25
+
+
+----------------------------------------------------------------------------------------------
+	 	           ** File selection for userInput.in **
+----------------------------------------------------------------------------------------------
+
+   *** Update Working directory
+
+Successful running of the program requires that some changes are made in
+the input file 'input.in'
+
+Steps:
+
+1. Move to the directory that contains the code if not there already
+2. Type 'pwd' in terminal
+3. Copy the results of the terminal command 'pwd'.
+4. open 'userInput.in'
+5. On line 4 in 'input.in' delete the existing directory and paste the result of step 3
+
+ -->( It is extremely important that you paste the 'pwd' in line 4 exactly
+    and make no other changes to input.in, eg. do not hit enter after you
+    paste. Formating of 'input.in is to be maintained otherwise)
+
+EXAMPLE:
+
+1.$ cd ~/home/Exo_Transmit/
+2.$ pwd 
+
+Results:  
+/home/Exo_Transmit
+
+4.$ emacs input.in &
+5. line 4 in 'input.in' before paste:
+
+   /YOUR_PATH
+   
+   line 4 in 'input.in' after paste:
+
+  /home/Exo_Transmit
+
+
+-------------------------
+     Chemistry file input (equation of state)
+
+There are many chemistry files that are included in the package for this program: see the 
+section 'General Information: Program files and directories: files in sub-directories: EOS/  
+for the list of the available chemistry files.
+
+On line 8 of 'userInput.in' you can indicate the chemistry file you want to use for the 
+transmission calculation.  Make sure to either specify the full path of the chemistry file
+or the path starting from the working directory of Exo_Transmit.  You may choose any of the
+files included in the 'EOS' sub-directory, or you may create your own chemistry file 
+following the exact format of the existing files in the 'EOS' sub-directory.
+
+-------------------------
+     Temperature-pressure profile file input
+
+The Exo_Transmit package contains a number of temperature-pressure (T-P) profile files, 
+allowing the user to specify the vertical temperature structure of the atmosphere.  These 
+files are contained in the subdirectory 'T_P'.  Most of the T-P profiles that are provided 
+with the code are for isothermal atmospheres with a single temperature expressed as a 
+function of pressure.  Note that transmission spectra are not highly sensitive to temperature
+gradients in an exoplanet atmosphere (i.e. temperature inversions vs. isothermal vs. 
+decreasing temperature as a function or altitude).  Transmission spectra do however carry a 
+sensitivity to the absolute atmospheric temperature, which is seen in both the scale height 
+dependence of the depth of spectral features and the temperature-dependence of atmospheric 
+composition and absorption cross-sections.
+
+On line 6 of 'userInput.in' you can indicate the T-P profile file you want to use for the 
+transmission calculation.  Make sure to either specify the full path of the T-P file or the 
+path starting from the working directory of Exo_Transmit.  You may choose any of the files 
+included in the 'T_P' sub-directory, or you may create your own T-P file following the exact 
+format of the existing files in the 'T_P' sub-directory.  
+
+** Note that the current version of Exo-Transmit only reads in the first 334 lines of the T-P
+profile files, corresponding to atmospheric pressures less than 1 bar.  If you would like to
+read in a different number of data points from the T-P profile that you have specified, you
+must edit line 48 of the file 'otherInput.in'.  
+
+---------------------
+     Output file name
+
+On line 10 of 'userInput.in', specify the name of the output file where you will store the 
+transmission spectrum.  The sub-directory 'Spectra/' has been provided for storing output
+files, or you may choose another path for storing these files.
+
+ -->( If you decide not to change the output file name, your output data for
+    the transmission spectrum will be in default.dat in the Spectra sub-directory. 
+    *** If you do not change the name of the output file, you will overwrite the existing
+    file.  The code will not warn you that this is occurring. ***)
+
+----------------------------------------------------------------------------------------------
+	 	  ** Selection of exoplanet parameters for userInput.in **
+----------------------------------------------------------------------------------------------
+
+	Surface gravity
+
+The planet's surface gravity should be specified in units of m/s^2.  In the current version 
+of Exo-Transmit, the surface gravity is treated as a constant throughout the vertical extent
+of the atmosphere. For transiting planets with measured masses, the surface gravity, g, is 
+calculated according to g = GM/R^2, where M is the planet's mass in kilograms, and R is the 
+transit radius in meters.  
+
+-------------------------
+
+	Planet radius
+
+The planet's radius measured in meters. 
+** Note the radius specified in the input file corresponds in Exo-Transmit to the planet's 
+radius at the base of the atmosphere, which is located at a pressure of 1 bar for cloud-free
+calculations (using the T-P profiles provided) and at the cloud top for calculations with 
+clouds.
+
+-------------------------
+
+	Star radius
+
+The host star radius measured in meters.  
+
+-------------------------
+
+	Cloud-top pressure
+
+Pressure (in units of Pa) of the top of an optically thick cloud deck.  If a non-zero number
+is entered on this line, Exo-Transmit will prevent starlight from propagating through the 
+atmosphere at pressures in excess of the value entered.  In effect, this simulates an 
+optically thick fully gray cloud deck.
+
+-------------------------
+
+	Rayleigh scattering augmentation factor
+
+The nomical Rayleigh scattering off of the gas molecules in the atmosphere can be augmented 
+(or reduced) here by a factor selected by the user.  Increasing the nominal Rayleigh 
+scattering approximates the effect of Rayleigh scattering aerosols (e.g. hazes) in the 
+exoplanet atmosphere.  A value of 1 entered on this line keeps the nominal Rayleigh 
+scattering intact.  A value of zero turns off Rayleigh scattering in the code.  
+
+============================================================================================
+
+EXAMPLE:
+
+To change the surface gravity of the planet
+1.Open 'userInput.in'
+        $ emacs userInput.in
+2. In userInput.in move to line 12
+3. delete old value and replace with new value
+
+   line 12 old value: 9.8   
+   line 12 new value: 14.07
+4. Save 'userInput.in' 
+5. Run program with new parameters:
+
+./Exo_Transmit
+
+-->(Note: you do not have to recompile each time you make changes to
+   'userInput.in'. The compilation proccess ('make') does not include
+   'userInput.in' so after saving, you can just re-run the program to see
+    your changes)
+
+
+
+==============================================================================================
+
+
+                                INPUT FILE INFORMATION:
+
+                   CHEMISTRY FILE SELECTOR SYSTEM (selectChem.in)
+----------------------------------------------------------------------------------------------
+
+
+This is our switch system that enables the user to select and de-select which absorption 
+and/or scattering processes you may or may or may not want to include in the transmission 
+spectrum calculations.  De-selecting any of these molecules or processes will remove its 
+associated opacity from the transmission spectrum calculation.  This will occur regardless of
+whether the molecule has a non-zero abundance in the chemistry file that you have selected, 
+so some care must be taken when turning off opacity sources.
+
+On opening selectChem.in, you will see the gases and processes available to you in the
+form below:
+
+CH4 = 1 
+CO2 = 1
+CO = 1
+H2O = 1
+NH3 = 1
+O2 = 1
+O3 = 1
+C2H2 = 1
+C2H4 = 1
+C2H6 = 1
+H2CO = 1
+H2S = 1
+HCl = 1
+HCN = 1
+HF = 1
+MgH = 1
+N2 = 1
+NO = 1
+NO2 = 1
+OCS = 1
+OH = 1
+PH3 = 1
+SH = 1
+SiH = 1
+SiO = 1
+SO2 = 1
+TiO = 1
+VO = 1
+Na = 1
+K = 1
+Scattering = 1
+Collision Induced Absorption = 1
+
+IMPORTANT NOTE: 
+
+ "0" indicates that that gas/process is EXCLUDED from the transmission
+calcualtions
+
+ "1" indicates that that gas/process is INCLUDED in the transmission
+calcualtions.
+
+Do not choose a character other than "0" or "1".  The default is to have all of the 
+absorption and scattering processes turned on.  
+
+=============================================================================================
+
+
+                                    SAMPLE RUN OF PROGRAM
+--------------------------------------------------------------------------------------------
+
+
+The demonstration uses all the tips given from the manual to perform a
+sample run of the program. It assumes you are running the program for the
+first time.
+
+In this demo we will make the following changes:
+
+
+cloud pressure changed to 1000 in 'userInput.in'
+gravity of planet changed to 18.0 in 'userInput.in'
+
+CH4 turned on in 'selectChem.in', all other gases turned off.
+Collision induced absorption turned off in 'selectChem.in'
+scattering turned on in 'selectChem.in'
+
+Exo-Transmit home directory modified in 'input.in'
+EOS, chemistry file modified to show /EOS/eosCH4.dat
+output filename changed to /Spectra/transmission_CH4.dat
+
+Process:
+--------
+1.Move to the directory that contains the program files if not there already
+
+  $ cd /home/USER/Exo_Transmit
+  $ ls   -->(this step was done just to see all the available files in the package)
+
+
+2. Make sure all the files are included in the package
+
+ --> (Step 2 is only done when you are using the program package for the
+     first, time; For subsequent runs skip step 2)
+  
+ --> (After each 'ls' command, make sure the given list matches the list
+      provided in the section:General Information)
+
+
+  $ ls *.h  -->(To view all header files)
+  $ ls *.c  -->(To view all source  files)
+  $ ls --ignore*.c --ignore *.h -->(To view all other files)
+  $ ls EOS -->(To view all the files under  the 'EOS' sub-directory)
+  $ ls Opac  -->(To view all the files under the 'Opac' sub-directory)
+  $ ls Spectra
+  $ ls T_P
+
+3. Open  'userInput.in'
+  
+  $ emacs userInput.in &
+
+4. Make necessary modifications 
+
+
+**********************************************************************************************
+
+--> ( before modifications:)
+
+userInput.in - 
+Formatting here is very important, please put the instructed content on the instructed line!
+Exo_Transmit home directory:
+/YOUR_PATH
+Temperature-Pressure data file:
+/T_P/t_p_800K.dat
+Equation of State file:
+/EOS/eos_1Xsolar_cond.dat
+Output file:
+/Spectra/default.dat
+Planet surface gravity (in m/s^-2):      
+9.8
+Planet radius (in m): -- This is the planet's radius at the base of the atmosphere (or at the cloud top for cloudy calculations) 
+6.40e+06
+Star radius (in m):
+7.00e+08
+Pressure of cloud top (in Pa), -- or leave at 0.0 if you want no cloud calculations.
+0.0
+Rayleigh scattering augmentation factor -- default is 1.0.  Can be increased to simulate additional sources of scattering.  0.0 turns off Rayleigh scattering.  
+1.0
+End of userInput.in (Do not change this line!)
+                                                                                              
+                                     
+ -->(after modifications)
+
+userInput.in - 
+Formatting here is very important, please put the instructed content on the instructed line!
+Exo_Transmit home directory:
+/home/USER/Exo_Transmit
+Temperature-Pressure data file:
+/T_P/t_p_800K.dat
+Equation of State file:
+/EOS/eosCH4.dat
+Output file:
+/Spectra/transmission_CH4.dat
+Planet surface gravity (in m/s^-2):      
+18.0
+Planet radius (in m): -- This is the planet's radius at the base of the atmosphere (or at the cloud top for cloudy calculations) 
+6.40e+06
+Star radius (in m):
+7.00e+08
+Pressure of cloud top (in Pa), -- or leave at 0.0 if you want no cloud calculations.
+1000.0
+Rayleigh scattering augmentation factor -- default is 1.0.  Can be increased to simulate additional sources of scattering.  0.0 turns off Rayleigh scattering.  
+1.0
+End of userInput.in (Do not change this line!)
+
+
+
+**********************************************************************************************
+
+5. Open 'selectChem.in'
+
+   $ emacs 
+6. Make neccessary modifications
+
+**********************************************************************************************
+
+-->(Before modifications)
+
+For each gas, place a 1 after the equals sign if the gas opacity will be present in your transmission calculations, and 0 if not. Do not change the order of the gases in this file!
+CH4 = 1 
+CO2 = 1
+CO = 1
+H2O = 1
+NH3 = 1
+O2 = 1
+O3 = 1
+C2H2 = 1
+C2H4 = 1
+C2H6 = 1
+H2CO = 1
+H2S = 1
+HCl = 1
+HCN = 1
+HF = 1
+MgH = 1
+N2 = 1
+NO = 1
+NO2 = 1
+OCS = 1
+OH = 1
+PH3 = 1
+SH = 1
+SiH = 1
+SiO = 1
+SO2 = 1
+TiO = 1
+VO = 1
+Na = 1
+K = 1
+Scattering = 1
+Collision Induced Absorption = 1
+Do not delete this line!
+
+
+-->(After modifications)
+
+For each gas, place a 1 after the equals sign if the gas opacity will be present in your transmission calculations, and 0 if not. Do not change the order of the gases in this file!
+CH4 = 1 
+CO2 = 0
+CO = 0
+H2O = 0
+NH3 = 0
+O2 = 0
+O3 = 0
+C2H2 = 0
+C2H4 = 0   
+C2H6 = 0
+H2CO = 0
+H2S = 0
+HCl = 0
+HCN = 0
+HF = 0
+MgH = 0
+N2 = 0
+NO = 0
+NO2 = 0
+OCS = 0
+OH = 0
+PH3 = 0
+SH = 0
+SiH = 0
+SiO = 0
+SO2 = 0
+TiO = 0
+VO = 0
+Na = 0
+K = 0
+Scattering = 1
+Collision Induced Absorption = 0
+Do not delete this line!
+
+**********************************************************************************************
+
+7.  Compile the code (if you haven't done this already)
+    $ make
+8.  Run the code:
+    $ ./Exo_Transmit
+
+==============================================================================================
+
+                             FURTHER HELP AND CONTACT INFORMATION
+----------------------------------------------------------------------------------------------
+
+Citation:
+
+Anyone using Exo_Transmit that leads to publcation can use the following citation:
+
+**TBD**
+
+Contact information:
+
+For any more help contact Eliza Kempton:
+
+email:  kemptone@grinnell.edu
+
+phone: (641) 269-9803
+
+Address: Grinnell College
+         Department of Physics
+	 1116 8th Ave.
+         Grinnell,IA 50112
+         United States
+       
+
+==============================================================================================
+
+GNU FREE DOCUMENTATION LICENSE
+----------------------------------------------------------------------------------------------
+
+GNU Free Documentation License
+
+Version 1.2, November 2002
+
+  Copyright (C) 2000,2001,2002  Free Software Foundation, Inc.
+  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+  Everyone is permitted to copy and distribute verbatim copies
+  of this license document, but changing it is not allowed.
+0. PREAMBLE
+
+The purpose of this License is to make a manual, textbook, or other functional and useful document "free" in the sense of freedom: to assure everyone the effective freedom to copy and redistribute it, with or without modifying it, either commercially or noncommercially. Secondarily, this License preserves for the author and publisher a way to get credit for their work, while not being considered responsible for modifications made by others.
+
+This License is a kind of "copyleft", which means that derivative works of the document must themselves be free in the same sense. It complements the GNU General Public License, which is a copyleft license designed for free software.
+
+We have designed this License in order to use it for manuals for free software, because free software needs free documentation: a free program should come with manuals providing the same freedoms that the software does. But this License is not limited to software manuals; it can be used for any textual work, regardless of subject matter or whether it is published as a printed book. We recommend this License principally for works whose purpose is instruction or reference.
+
+1. APPLICABILITY AND DEFINITIONS
+
+This License applies to any manual or other work, in any medium, that contains a notice placed by the copyright holder saying it can be distributed under the terms of this License. Such a notice grants a world-wide, royalty-free license, unlimited in duration, to use that work under the conditions stated herein. The "Document", below, refers to any such manual or work. Any member of the public is a licensee, and is addressed as "you". You accept the license if you copy, modify or distribute the work in a way requiring permission under copyright law.
+
+A "Modified Version" of the Document means any work containing the Document or a portion of it, either copied verbatim, or with modifications and/or translated into another language.
+
+A "Secondary Section" is a named appendix or a front-matter section of the Document that deals exclusively with the relationship of the publishers or authors of the Document to the Document's overall subject (or to related matters) and contains nothing that could fall directly within that overall subject. (Thus, if the Document is in part a textbook of mathematics, a Secondary Section may not explain any mathematics.) The relationship could be a matter of historical connection with the subject or with related matters, or of legal, commercial, philosophical, ethical or political position regarding them.
+
+The "Invariant Sections" are certain Secondary Sections whose titles are designated, as being those of Invariant Sections, in the notice that says that the Document is released under this License. If a section does not fit the above definition of Secondary then it is not allowed to be designated as Invariant. The Document may contain zero Invariant Sections. If the Document does not identify any Invariant Sections then there are none.
+
+The "Cover Texts" are certain short passages of text that are listed, as Front-Cover Texts or Back-Cover Texts, in the notice that says that the Document is released under this License. A Front-Cover Text may be at most 5 words, and a Back-Cover Text may be at most 25 words.
+
+A "Transparent" copy of the Document means a machine-readable copy, represented in a format whose specification is available to the general public, that is suitable for revising the document straightforwardly with generic text editors or (for images composed of pixels) generic paint programs or (for drawings) some widely available drawing editor, and that is suitable for input to text formatters or for automatic translation to a variety of formats suitable for input to text formatters. A copy made in an otherwise Transparent file format whose markup, or absence of markup, has been arranged to thwart or discourage subsequent modification by readers is not Transparent. An image format is not Transparent if used for any substantial amount of text. A copy that is not "Transparent" is called "Opaque".
+
+Examples of suitable formats for Transparent copies include plain ASCII without markup, Texinfo input format, LaTeX input format, SGML or XML using a publicly available DTD, and standard-conforming simple HTML, PostScript or PDF designed for human modification. Examples of transparent image formats include PNG, XCF and JPG. Opaque formats include proprietary formats that can be read and edited only by proprietary word processors, SGML or XML for which the DTD and/or processing tools are not generally available, and the machine-generated HTML, PostScript or PDF produced by some word processors for output purposes only.
+
+The "Title Page" means, for a printed book, the title page itself, plus such following pages as are needed to hold, legibly, the material this License requires to appear in the title page. For works in formats which do not have any title page as such, "Title Page" means the text near the most prominent appearance of the work's title, preceding the beginning of the body of the text.
+
+A section "Entitled XYZ" means a named subunit of the Document whose title either is precisely XYZ or contains XYZ in parentheses following text that translates XYZ in another language. (Here XYZ stands for a specific section name mentioned below, such as "Acknowledgements", "Dedications", "Endorsements", or "History".) To "Preserve the Title" of such a section when you modify the Document means that it remains a section "Entitled XYZ" according to this definition.
+
+The Document may include Warranty Disclaimers next to the notice which states that this License applies to the Document. These Warranty Disclaimers are considered to be included by reference in this License, but only as regards disclaiming warranties: any other implication that these Warranty Disclaimers may have is void and has no effect on the meaning of this License.
+
+2. VERBATIM COPYING
+
+You may copy and distribute the Document in any medium, either commercially or noncommercially, provided that this License, the copyright notices, and the license notice saying this License applies to the Document are reproduced in all copies, and that you add no other conditions whatsoever to those of this License. You may not use technical measures to obstruct or control the reading or further copying of the copies you make or distribute. However, you may accept compensation in exchange for copies. If you distribute a large enough number of copies you must also follow the conditions in section 3.
+
+You may also lend copies, under the same conditions stated above, and you may publicly display copies.
+
+3. COPYING IN QUANTITY
+
+If you publish printed copies (or copies in media that commonly have printed covers) of the Document, numbering more than 100, and the Document's license notice requires Cover Texts, you must enclose the copies in covers that carry, clearly and legibly, all these Cover Texts: Front-Cover Texts on the front cover, and Back-Cover Texts on the back cover. Both covers must also clearly and legibly identify you as the publisher of these copies. The front cover must present the full title with all words of the title equally prominent and visible. You may add other material on the covers in addition. Copying with changes limited to the covers, as long as they preserve the title of the Document and satisfy these conditions, can be treated as verbatim copying in other respects.
+
+If the required texts for either cover are too voluminous to fit legibly, you should put the first ones listed (as many as fit reasonably) on the actual cover, and continue the rest onto adjacent pages.
+
+If you publish or distribute Opaque copies of the Document numbering more than 100, you must either include a machine-readable Transparent copy along with each Opaque copy, or state in or with each Opaque copy a computer-network location from which the general network-using public has access to download using public-standard network protocols a complete Transparent copy of the Document, free of added material. If you use the latter option, you must take reasonably prudent steps, when you begin distribution of Opaque copies in quantity, to ensure that this Transparent copy will remain thus accessible at the stated location until at least one year after the last time you distribute an Opaque copy (directly or through your agents or retailers) of that edition to the public.
+
+It is requested, but not required, that you contact the authors of the Document well before redistributing any large number of copies, to give them a chance to provide you with an updated version of the Document.
+
+4. MODIFICATIONS
+
+You may copy and distribute a Modified Version of the Document under the conditions of sections 2 and 3 above, provided that you release the Modified Version under precisely this License, with the Modified Version filling the role of the Document, thus licensing distribution and modification of the Modified Version to whoever possesses a copy of it. In addition, you must do these things in the Modified Version:
+
+A. Use in the Title Page (and on the covers, if any) a title distinct from that of the Document, and from those of previous versions (which should, if there were any, be listed in the History section of the Document). You may use the same title as a previous version if the original publisher of that version gives permission.
+B. List on the Title Page, as authors, one or more persons or entities responsible for authorship of the modifications in the Modified Version, together with at least five of the principal authors of the Document (all of its principal authors, if it has fewer than five), unless they release you from this requirement.
+C. State on the Title page the name of the publisher of the Modified Version, as the publisher.
+D. Preserve all the copyright notices of the Document.
+E. Add an appropriate copyright notice for your modifications adjacent to the other copyright notices.
+F. Include, immediately after the copyright notices, a license notice giving the public permission to use the Modified Version under the terms of this License, in the form shown in the Addendum below.
+G. Preserve in that license notice the full lists of Invariant Sections and required Cover Texts given in the Document's license notice.
+H. Include an unaltered copy of this License.
+I. Preserve the section Entitled "History", Preserve its Title, and add to it an item stating at least the title, year, new authors, and publisher of the Modified Version as given on the Title Page. If there is no section Entitled "History" in the Document, create one stating the title, year, authors, and publisher of the Document as given on its Title Page, then add an item describing the Modified Version as stated in the previous sentence.
+J. Preserve the network location, if any, given in the Document for public access to a Transparent copy of the Document, and likewise the network locations given in the Document for previous versions it was based on. These may be placed in the "History" section. You may omit a network location for a work that was published at least four years before the Document itself, or if the original publisher of the version it refers to gives permission.
+K. For any section Entitled "Acknowledgements" or "Dedications", Preserve the Title of the section, and preserve in the section all the substance and tone of each of the contributor acknowledgements and/or dedications given therein.
+L. Preserve all the Invariant Sections of the Document, unaltered in their text and in their titles. Section numbers or the equivalent are not considered part of the section titles.
+M. Delete any section Entitled "Endorsements". Such a section may not be included in the Modified Version.
+N. Do not retitle any existing section to be Entitled "Endorsements" or to conflict in title with any Invariant Section.
+O. Preserve any Warranty Disclaimers.
+If the Modified Version includes new front-matter sections or appendices that qualify as Secondary Sections and contain no material copied from the Document, you may at your option designate some or all of these sections as invariant. To do this, add their titles to the list of Invariant Sections in the Modified Version's license notice. These titles must be distinct from any other section titles.
+
+You may add a section Entitled "Endorsements", provided it contains nothing but endorsements of your Modified Version by various parties--for example, statements of peer review or that the text has been approved by an organization as the authoritative definition of a standard.
+
+You may add a passage of up to five words as a Front-Cover Text, and a passage of up to 25 words as a Back-Cover Text, to the end of the list of Cover Texts in the Modified Version. Only one passage of Front-Cover Text and one of Back-Cover Text may be added by (or through arrangements made by) any one entity. If the Document already includes a cover text for the same cover, previously added by you or by arrangement made by the same entity you are acting on behalf of, you may not add another; but you may replace the old one, on explicit permission from the previous publisher that added the old one.
+
+The author(s) and publisher(s) of the Document do not by this License give permission to use their names for publicity for or to assert or imply endorsement of any Modified Version.
+
+5. COMBINING DOCUMENTS
+
+You may combine the Document with other documents released under this License, under the terms defined in section 4 above for modified versions, provided that you include in the combination all of the Invariant Sections of all of the original documents, unmodified, and list them all as Invariant Sections of your combined work in its license notice, and that you preserve all their Warranty Disclaimers.
+
+The combined work need only contain one copy of this License, and multiple identical Invariant Sections may be replaced with a single copy. If there are multiple Invariant Sections with the same name but different contents, make the title of each such section unique by adding at the end of it, in parentheses, the name of the original author or publisher of that section if known, or else a unique number. Make the same adjustment to the section titles in the list of Invariant Sections in the license notice of the combined work.
+
+In the combination, you must combine any sections Entitled "History" in the various original documents, forming one section Entitled "History"; likewise combine any sections Entitled "Acknowledgements", and any sections Entitled "Dedications". You must delete all sections Entitled "Endorsements."
+
+6. COLLECTIONS OF DOCUMENTS
+
+You may make a collection consisting of the Document and other documents released under this License, and replace the individual copies of this License in the various documents with a single copy that is included in the collection, provided that you follow the rules of this License for verbatim copying of each of the documents in all other respects.
+
+You may extract a single document from such a collection, and distribute it individually under this License, provided you insert a copy of this License into the extracted document, and follow this License in all other respects regarding verbatim copying of that document.
+
+7. AGGREGATION WITH INDEPENDENT WORKS
+
+A compilation of the Document or its derivatives with other separate and independent documents or works, in or on a volume of a storage or distribution medium, is called an "aggregate" if the copyright resulting from the compilation is not used to limit the legal rights of the compilation's users beyond what the individual works permit. When the Document is included in an aggregate, this License does not apply to the other works in the aggregate which are not themselves derivative works of the Document.
+
+If the Cover Text requirement of section 3 is applicable to these copies of the Document, then if the Document is less than one half of the entire aggregate, the Document's Cover Texts may be placed on covers that bracket the Document within the aggregate, or the electronic equivalent of covers if the Document is in electronic form. Otherwise they must appear on printed covers that bracket the whole aggregate.
+
+8. TRANSLATION
+
+Translation is considered a kind of modification, so you may distribute translations of the Document under the terms of section 4. Replacing Invariant Sections with translations requires special permission from their copyright holders, but you may include translations of some or all Invariant Sections in addition to the original versions of these Invariant Sections. You may include a translation of this License, and all the license notices in the Document, and any Warranty Disclaimers, provided that you also include the original English version of this License and the original versions of those notices and disclaimers. In case of a disagreement between the translation and the original version of this License or a notice or disclaimer, the original version will prevail.
+
+If a section in the Document is Entitled "Acknowledgements", "Dedications", or "History", the requirement (section 4) to Preserve its Title (section 1) will typically require changing the actual title.
+
+9. TERMINATION
+
+You may not copy, modify, sublicense, or distribute the Document except as expressly provided for under this License. Any other attempt to copy, modify, sublicense or distribute the Document is void, and will automatically terminate your rights under this License. However, parties who have received copies, or rights, from you under this License will not have their licenses terminated so long as such parties remain in full compliance.
+
+10. FUTURE REVISIONS OF THIS LICENSE
+
+The Free Software Foundation may publish new, revised versions of the GNU Free Documentation License from time to time. Such new versions will be similar in spirit to the present version, but may differ in detail to address new problems or concerns. See http://www.gnu.org/copyleft/.
+
+Each version of the License is given a distinguishing version number. If the Document specifies that a particular numbered version of this License "or any later version" applies to it, you have the option of following the terms and conditions either of that specified version or of any later version that has been published (not as a draft) by the Free Software Foundation. If the Document does not specify a version number of this License, you may choose any version ever published (not as a draft) by the Free Software Foundation.

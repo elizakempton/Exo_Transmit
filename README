@@ -1,0 +1,23 @@
+
+
+Compiling:
+         
+           $ make
+
+To run the code:
+
+           $ ./Exo_Transmit
+
+
+To undo compiling or delete object files:
+
+           $ make clean
+
+
+For additional information on compiling and running the program see 
+USR_MANUAL.txt 
+
+Contact information:
+
+Eliza Kempton
+kemptone@grinnell.edu
