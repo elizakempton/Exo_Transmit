@@ -165,6 +165,8 @@ provided to simulate the presence of atmospheric aerosols in two ways:  (1) an o
 thick (gray) cloud deck can be generated at a user-specified height in the atmosphere, and 
 (2) the nominal Rayleigh scattering can be increased by a specified factor.
 
+** Unless otherwise noted, the code calculates all quantities in SI units. **
+
 ==============================================================================================
 
 
@@ -328,16 +330,7 @@ opacCO.dat    opacHCl.dat   opacNO.dat    opacOH.dat    opacTiO.dat
    + collision-induced opacities
 
 Spectra/:
-C2H2_1000K_g10_2RE_1RSun.dat  HCN_1000K_g10_2RE_1RSun.dat   OH_1000K_g10_2RE_1RSun.dat
-C2H4_1000K_g10_2RE_1RSun.dat  HCl_1000K_g10_2RE_1RSun.dat   PH3_1000K_g10_2RE_1RSun.dat
-C2H6_1000K_g10_2RE_1RSun.dat  HF_1000K_g10_2RE_1RSun.dat    SH_1000K_g10_2RE_1RSun.dat
-CH4_1000K_g10_2RE_1RSun.dat   MgH_1000K_g10_2RE_1RSun.dat   SO2_1000K_g10_2RE_1RSun.dat
-CO2_1000K_g10_2RE_1RSun.dat   N2_1000K_g10_2RE_1RSun.dat    SiH_1000K_g10_2RE_1RSun.dat
-COS_1000K_g10_2RE_1RSun.dat   NH3_1000K_g10_2RE_1RSun.dat   SiO_1000K_g10_2RE_1RSun.dat
-CO_1000K_g10_2RE_1RSun.dat    NO2_1000K_g10_2RE_1RSun.dat   H2CO_1000K_g10_2RE_1RSun.dat  
-NO_1000K_g10_2RE_1RSun.dat    TiO_1000K_g10_2RE_1RSun.dat   H2O_1000K_g10_2RE_1RSun.dat   
-O2_1000K_g10_2RE_1RSun.dat    VO_1000K_g10_2RE_1RSun.dat    H2S_1000K_g10_2RE_1RSun.dat   
-O3_1000K_g10_2RE_1RSun.dat
+default.dat
 
 T_P/:
 t_p_300K.dat	  t_p_800K.dat        t_p_1300K.dat     
@@ -638,6 +631,9 @@ must edit line 48 of the file 'otherInput.in'.
 On line 10 of 'userInput.in', specify the name of the output file where you will store the 
 transmission spectrum.  The sub-directory 'Spectra/' has been provided for storing output
 files, or you may choose another path for storing these files.
+
+The two columns of the spectrum are wavelength (in units of meters) and the transmission 
+spectrum (given as transit depth in percent).
 
  -->( If you decide not to change the output file name, your output data for
     the transmission spectrum will be in default.dat in the Spectra sub-directory. 
