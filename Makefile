@@ -27,7 +27,7 @@ all: Exo_Transmit
 
 #<<<<<<< HEAD
 Exo_Transmit: main_transmission.o readopactable.o totalopac.o readchemtable.o read_t_p.o rt_transmission.o nrutil.o utils.o interpol.o planck.o geometry.o getFileArray.o getVars.o getNTau.o getChemSelection.o
-	$(CC) -lm -o Exo_Transmit  main_transmission.o readopactable.o totalopac.o readchemtable.o read_t_p.o rt_transmission.o nrutil.o utils.o interpol.o planck.o geometry.o getFileArray.o getVars.o getNTau.o getChemSelection.o
+	$(CC) -o Exo_Transmit  main_transmission.o readopactable.o totalopac.o readchemtable.o read_t_p.o rt_transmission.o nrutil.o utils.o interpol.o planck.o geometry.o getFileArray.o getVars.o getNTau.o getChemSelection.o -lm
 #=======
 
 main_transmission.o: main_transmission.c opac.h atmos.h prototypes.h 
