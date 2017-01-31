@@ -43,7 +43,7 @@ On lines 42 through 44, write the number of pressure points in the TP grid (42) 
 1.0e-04
 1.0e+08
 On line 46 write the number of wavelength points in the grid:
-7454
+4616
 On line 48 write the number of optical depth points:
 334
 End of otherInput.c (Do not change this line!)

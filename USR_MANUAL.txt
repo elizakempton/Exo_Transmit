@@ -10,6 +10,23 @@ The Exo_Transmit code can be obtained from :
 
 https://github.com/elizakempton/Exo_Transmit
 
+
+When publishing results based on usage of Exo-Transmit please cite:
+
+Kempton, E. M.-R., Lupu, R. E., Owusu-Asare, A., Slough, P., & Cale, B., 2016, 
+arXiv:1611.03871 (http://adsabs.harvard.edu/abs/2016arXiv161103871K)
+
+If using the opacity data included with Exo-Transmit please additionall cite the following 
+three papers:
+
+Freedman, R. S., Marley, M. S., & Lodders, K., 2008, ApJS, 174, 504-513 
+(http://adsabs.harvard.edu/abs/2008ApJS..174..504F)
+Freedman, R. S., Lustig-Yaeger, J., Fortney, J. J., et al., 2014, ApJS, 214, 25 
+(http://adsabs.harvard.edu/abs/2014ApJS..214...25F)
+Lupu, R. E., Zahnle, K., Marley, M. S., et al., 2014, ApJ, 784, 27 
+(http://adsabs.harvard.edu/abs/2014ApJ...784...27L)
+
+
 ==============================================================================================
 
 
@@ -38,7 +55,7 @@ This manual is intended for persons interested in generating transmission spectr
 exoplanet atmospheres. The manual includes: instructions on downloading the Exo_Transmit 
 code, information about the code's functionality, a discussion of the different components of
 the code, a tutorial on how to use the code, and a troubleshooting section. The Exo-Transmit
-code is described in further detail in **paper reference**.  
+code is described in further detail in E. M.-R. Kempton et al., 2016, arXiv:1611.03871 (http://adsabs.harvard.edu/abs/2016arXiv161103871K).
 
 This manual assumes the code is run on a UNIX, LINUX, or similar platform and references may 
 be made to certain features of the UNIX or LINUX operating systems.  

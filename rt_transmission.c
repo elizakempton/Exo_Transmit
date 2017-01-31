@@ -131,8 +131,8 @@ int RT_Transmit()
   
   Angles(ds, theta, dtheta, NTAU, R_PLANET, R_STAR);
   
-  /*   Calculate the incident and emergent intensities.  Print to file 
-       transmission.dat */
+  /*   Calculate the incident and emergent intensities.  Print to Output
+       file specified in userInput.in  */
   
   R -=  Radius(R_PLANET, ds, NTAU);
   printf("R %f\n", (1.0 -  SQ(R)/SQ(R_STAR)));
@@ -140,6 +140,10 @@ int RT_Transmit()
   file = fopen(fileArray[2], "w");
   
   t_star = 6000.0;  // Arbitrary stellar temperature.  Gets divided out.
+
+  fprintf(file, "Wavelength\tTransit Depth\n");
+  fprintf(file, "(meters)\t(percent)\n");
+  
 
   for(i=0; i<NLAMBDA; i++){
     flux_pl[i] = 0.0;

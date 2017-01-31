@@ -223,7 +223,7 @@ void TotalOpac() {
 	+ chem.VO[j][k] * m_VO 
 	+ chem.OCS[j][k] * m_OCS 
 	+ chem.Na[j][k] * m_Na 
-	+ chem.K[j][k] * m_K;	  
+	+ chem.K[j][k] * m_K;
     }
   }
   
@@ -1212,10 +1212,6 @@ void TotalOpac() {
 	    (8.0*PI/3.0) * SQ(3.78e-30) *
 	    SQ(2.0*PI/ atmos.lambda[i]) * SQ(2.0*PI/ atmos.lambda[i]) *
 	    chem.H2S[j][k]*chem.P[j] / (KBOLTZMANN * chem.T[k])
-	    +
-	    (8.0*PI/3.0) * SQ(1.74e-30) *
-	    SQ(2.0*PI/ atmos.lambda[i]) * SQ(2.0*PI/ atmos.lambda[i]) *
-	    chem.N2[j][k]*chem.P[j] / (KBOLTZMANN * chem.T[k])
 	    +
 	    (8.0*PI/3.0) * SQ(1.70e-30) *
 	    SQ(2.0*PI/ atmos.lambda[i]) * SQ(2.0*PI/ atmos.lambda[i]) *

@@ -1,5 +1,5 @@
 userInput.in - 
-Formatting here is very important, please put the instructed content on the instructed line!
+Formatting here is very important, please put the instructed content on the instructed line.
 Exo_Transmit home directory:
 /YOUR_PATH
 Temperature-Pressure data file:
@@ -18,4 +18,4 @@ Pressure of cloud top (in Pa), -- or leave at 0.0 if you want no cloud calculati
 0.0
 Rayleigh scattering augmentation factor -- default is 1.0.  Can be increased to simulate additional sources of scattering.  0.0 turns off Rayleigh scattering.  
 1.0
-End of userInput.in (Do not change this line!)
+End of userInput.in (Do not change this line)
