@@ -46,7 +46,7 @@ void getNTau(vars *variables, char *filename){
     FILE *file = fopen(filename, "r");
     if(file){
       fscanf(file, "%s %s %s", dum, dum, dum);
-      while(fscanf(file, "%d %lf %*lf", &index[i], &pressure[i]) != EOF){
+      while(fscanf(file, "%d %lf %*f", &index[i], &pressure[i]) != EOF){
 	if(pressure[i] < threshold)
 	  NTau++;
 	i++;
