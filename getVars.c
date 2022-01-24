@@ -18,6 +18,8 @@
 
 Author: Patrick Slough (sloughpa@grinnell.edu)
 
+
+SV -- added error messages and warnings for unphysical user inputs  
 ------------------------------------------------------------------ */
 
 /* Gets input variables from userInput.in
@@ -43,22 +45,42 @@ vars getVars(){
       switch(lineCount){
       case 12:
 	vars.G = strtod(line, NULL);
+	if(strchr(line,'.') == NULL){
+	  printf("\n You dropped the decimal in your surface gravity!");
+	  exit(1);
+	}
 	lineCount++;
 	break;
       case 14:
 	vars.R_PLANET = strtod(line, NULL);
+	if(strchr(line, 'e') == NULL){
+	  printf("\n You dropped the e in your planet radius!");
+	  exit(1);
+        }
 	lineCount++;
 	break;
       case 16:
 	vars.R_STAR = strtod(line, NULL);
+	if(strchr(line, 'e') == NULL){
+	  printf("\n You dropped the e in your star radius!");
+	  exit(1);
+	}
 	lineCount++;
 	break;
        case 18:
 	vars.THRESHOLD = strtod(line, NULL);
+	if(strchr(line, '.') == NULL){
+	  printf("\n You dropped the decimal in your cloud pressure!");
+	  exit(1);
+	}
 	lineCount++;
 	break;
       case 20:
 	vars.RAYLEIGH = strtod(line, NULL);
+	if(strchr(line, '.') == NULL){
+	  printf("\n You dropped the decimal in your Rayleigh scattering parameter!");
+	  exit(1);
+	}
 	lineCount++;
 	break;
       default:
